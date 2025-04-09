@@ -32,27 +32,66 @@
       .chat-header {
         background-color: #ffffff;
         text-align: center;
-        min-height: 60px;
+        height: 40px;
         line-height: 1.2;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px;
+        padding: 6px 12px;
         border-bottom: 0.5px solid #d1d1d1;
+      }
+
+      .chat-header .avatar {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+      }
+
+      .chat-header .header-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .chat-header label {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      /* 스크롤바 스타일 */
+      .chat-messages::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+
+      .chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+      }
+
+      .chat-messages::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 2px;
+        min-height: 2px;
+      }
+
+      .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #999;
       }
 
       /* 메시지 영역 스타일 */
       .chat-messages {
         flex: 1;
-        padding: 15px;
+        padding: 10px;
         overflow-y: auto;
         display: flex;
-        gap: 1.2rem;
+        gap: 0.8rem;
         flex-direction: column;
+        margin-top: 10px; /* 헤더와의 간격 줄임 */
       }
       /* 입력 영역 스타일 */
       .chat-input {
-        padding: 15px;
+        padding: 10px;
         border-top: 1px solid #ccc;
       }
       .chat-input form {
@@ -61,20 +100,30 @@
       }
       .chat-input input[type="text"] {
         flex: 1;
-        padding: 12px 14px;
-        border-radius: 25px;
+        padding: 8px 12px;
+        border-radius: 20px;
         border: 1px solid transparent;
         outline: none;
         transition: background-color 0.3s ease, border 0.3s ease;
+        font-size: 0.85rem;
       }
       #messageText:focus {
         background-color: #fff;
         border: 1px solid #ccc;
       }
+      .chat-input input[type="text"]::placeholder {
+        font-size: 0.85rem;
+        color: #999;
+      }
       .chat-input button {
         border: none;
         background-color: #ffffff;
         cursor: pointer;
+        padding: 0 5px;
+      }
+      .chat-input button svg {
+        width: 22px;
+        height: 22px;
       }
       img {
         width: 36px;
@@ -161,8 +210,8 @@
           <path d="M1.66667 26C1.19445 26 0.798894 25.792 0.480006 25.376C0.161117 24.96 0.00111686 24.4458 5.74712e-06 23.8333C-0.00110536 23.2209 0.158895 22.7066 0.480006 22.2906C0.801117 21.8746 1.19667 21.6666 1.66667 21.6666H28.3333C28.8055 21.6666 29.2017 21.8746 29.5217 22.2906C29.8417 22.7066 30.0011 23.2209 30 23.8333C29.9989 24.4458 29.8389 24.9607 29.52 25.3781C29.2011 25.7956 28.8055 26.0029 28.3333 26H1.66667ZM1.66667 15.1667C1.19445 15.1667 0.798894 14.9587 0.480006 14.5427C0.161117 14.1267 0.00111686 13.6124 5.74712e-06 13C-0.00110536 12.3875 0.158895 11.8733 0.480006 11.4573C0.801117 11.0413 1.19667 10.8333 1.66667 10.8333H28.3333C28.8055 10.8333 29.2017 11.0413 29.5217 11.4573C29.8417 11.8733 30.0011 12.3875 30 13C29.9989 13.6124 29.8389 14.1274 29.52 14.5448C29.2011 14.9623 28.8055 15.1695 28.3333 15.1667H1.66667ZM1.66667 4.33333C1.19445 4.33333 0.798894 4.12533 0.480006 3.70933C0.161117 3.29333 0.00111686 2.77911 5.74712e-06 2.16666C-0.00110536 1.55422 0.158895 1.04 0.480006 0.624C0.801117 0.208 1.19667 0 1.66667 0H28.3333C28.8055 0 29.2017 0.208 29.5217 0.624C29.8417 1.04 30.0011 1.55422 30 2.16666C29.9989 2.77911 29.8389 3.29405 29.52 3.7115C29.2011 4.12894 28.8055 4.33622 28.3333 4.33333H1.66667Z" fill="#5BA24B"/>
           </svg>
           </div>
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;">
-          <img src = "/static/img/character.png" class="avatar"/>
+        <div class="header-content">
+          <img src="/static/img/character.png" class="avatar"/>
           <label>AI챗봇 꿈틀이</label>
         </div>
         <div style="cursor: pointer;">
@@ -244,7 +293,7 @@
           messageInput.disabled = false;
           messageInput.placeholder = "메시지를 입력하세요...";
         }
-      }, 55); // 40ms에서 55ms로 변경하여 속도 조절
+      }, 35); // 55ms에서 40ms로 변경하여 속도 조절
 
       // 받은 메시지 박스 생성
       function createReceivedMessageBox() {
@@ -315,10 +364,10 @@
                 break;
               case "가끔":
                 // 랜덤하게 세 가지 응답 중 하나 선택
-                const randomNum = Math.random();
-                if (randomNum < 0.33) {
+                const randomOften = Math.random();
+                if (randomOften < 0.33) {
                   responseText = "가끔 해!";
-                } else if (randomNum < 0.66) {
+                } else if (randomOften < 0.66) {
                   responseText = "가끔 생각나면 해!";
                 } else {
                   responseText = "가끔 해.";
@@ -326,15 +375,39 @@
                 responseValue = "2";
                 break;
               case "종종":
-                responseText = "종종 하는 것 같아.";
+                // 랜덤하게 세 가지 응답 중 하나 선택
+                const randomSometimes = Math.random();
+                if (randomSometimes < 0.33) {
+                  responseText = "종종 하는 편이야.";
+                } else if (randomSometimes < 0.66) {
+                  responseText = "종종 하긴 해~";
+                } else {
+                  responseText = "종종 하는 것 같아.";
+                }
                 responseValue = "3";
                 break;
               case "자주":
-                responseText = "자주 하는 것 같아.";
+                // 랜덤하게 세 가지 응답 중 하나 선택
+                const randomFrequent = Math.random();
+                if (randomFrequent < 0.33) {
+                  responseText = "꽤 자주 해.";
+                } else if (randomFrequent < 0.66) {
+                  responseText = "자주 하는 편이지.";
+                } else {
+                  responseText = "자주 하는 것 같아.";
+                }
                 responseValue = "4";
                 break;
               case "항상":
-                responseText = "항상 해.";
+                // 랜덤하게 세 가지 응답 중 하나 선택
+                const randomAlways = Math.random();
+                if (randomAlways < 0.33) {
+                  responseText = "거의 항상 해!";
+                } else if (randomAlways < 0.66) {
+                  responseText = "항상 하는 거나 다름없어!";
+                } else {
+                  responseText = "항상 해.";
+                }
                 responseValue = "5";
                 break;
               default:
@@ -370,8 +443,8 @@
                 // 두 번째 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 2);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 2) {
               // 두 번째 질문 후 세 번째 질문 표시
               setTimeout(() => {
@@ -384,8 +457,8 @@
                 // 세 번째 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 3);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 3) {
               // 세 번째 질문 후 네 번째 질문 표시
               setTimeout(() => {
@@ -398,8 +471,8 @@
                 // 네 번째 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 4);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 4) {
               // 네 번째 질문 후 다섯 번째 질문 표시
               setTimeout(() => {
@@ -412,8 +485,8 @@
                 // 다섯 번째 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 5);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 5) {
               // 다섯 번째 질문 후 여섯 번째 질문 표시
               setTimeout(() => {
@@ -426,8 +499,8 @@
                 // 여섯 번째 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 6);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 6) {
               // 여섯 번째 질문 후 전환 메시지 표시
               setTimeout(() => {
@@ -452,10 +525,10 @@
                     // 7번 질문 버튼 추가
                     setTimeout(() => {
                       createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 7);
-                    }, 1000); // 메시지 타이핑 완료 후 0.5초 뒤
-                  }, 3000); // SNS 소개 메시지 후 3초 뒤
-                }, 3000); // 전환 메시지 후 3초 뒤
-              }, 1000);
+                    }, 1300); // 메시지 타이핑 완료 후 0.5초 뒤
+                  }, 1300); // SNS 소개 메시지 후 1.3초 뒤
+                }, 1300); // 전환 메시지 후 1.3초 뒤
+              }, 1300);
             }
             // 추가 질문들에 대한 분기 처리는 여기에 추가할 수 있음
             else if (questionNumber === 7) {
@@ -470,8 +543,8 @@
                 // 8번 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 8);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 8) {
               // 8번 질문 후 9번 질문 표시
               setTimeout(() => {
@@ -484,8 +557,8 @@
                 // 9번 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 9);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 9) {
               // 9번 질문 후 10번 질문 표시
               setTimeout(() => {
@@ -498,8 +571,8 @@
                 // 10번 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 10);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 10) {
               // 10번 질문 후 11번 질문 표시
               setTimeout(() => {
@@ -512,8 +585,8 @@
                 // 11번 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 11);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 11) {
               // 11번 질문 후 12번 질문 표시
               setTimeout(() => {
@@ -526,8 +599,8 @@
                 // 12번 질문 버튼 추가
                 setTimeout(() => {
                   createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 12);
-                }, 1000); // 메시지 표시 후 1초 뒤
-              }, 1000);
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
             } else if (questionNumber === 12) {
               // 12번 질문의 경우 RIASEC 점수를 계산하고 저장
               const category = riasecCategories[questionNumber];
@@ -617,17 +690,17 @@
                     // 다섯 번째 메시지가 끝나면 버튼 추가
                     setTimeout(() => {
                       createChoiceButtons(['전혀', '가끔', '종종', '자주', '항상'], 1);
-                    }, 1000); // 메시지 즉시 표시 후 1초 뒤 버튼 추가
-                  }, 3000); // 네 번째 메시지 후 3초 뒤
-                }, 3000); // 세 번째 메시지 후 3초 뒤
-              }, 1000);
+                    }, 800); // 메시지 즉시 표시 후 0.5초 뒤 버튼 추가
+                  }, 1300); // 네 번째 메시지 후 1.3초 뒤
+                }, 1300); // 세 번째 메시지 후 1.3초 뒤
+              }, 800);
             } else {
               // "아니, 괜찮아!"를 선택했을 때 다른 응답
               setTimeout(() => {
                 // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
                 createReceivedMessageBox();
                 receivedText += "알겠어. 나중에 필요하면 언제든지 말해줘!";
-              }, 1000);
+              }, 800);
             }
           });
           
@@ -693,15 +766,15 @@
                 setTimeout(() => {
                   createReceivedMessageBoxNoAvatar();
                   receivedText += "에베베베베2 직업, 학과, 정보추천";
-                }, 2000); // "추천을 시작할게" 메시지 후 2초 뒤
-              }, 1000);
+                }, 1300); // "좋아!" 메시지 후 1.3초 뒤
+              }, 800);
             } else {
               // "아니, 괜찮아."를 선택했을 때 처리
               setTimeout(() => {
                 // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
                 createReceivedMessageBox();
                 receivedText += "알겠어. 원하는 다른 정보가 있으면 언제든지 물어봐!";
-              }, 1000);
+              }, 800);
             } 
           });
           
@@ -741,16 +814,16 @@
           const secondMessage = "너의 진로를 함께 고민하기 위해 너에 대한 정보가 필요해. 설문을 진행할까?";
           receivedText += secondMessage;
           
-          // 두 번째 메시지 표시가 완료되는 시간 계산 (각 글자당 55ms)
-          const typingTime = secondMessage.length * 55;
+          // 두 번째 메시지 표시가 완료되는 시간 계산 (각 글자당 40ms)
+          const typingTime = secondMessage.length * 45;
           
-          // 두 번째 메시지 표시가 완료된 후 0.5초 뒤에 버튼 추가
+          // 두 번째 메시지 표시가 완료된 후 0.3초 뒤에 버튼 추가
           setTimeout(() => {
             // 별도의 함수로 두 개의 버튼만 추가
             createTwoChoiceButtons(['응, 할래!', '아니, 괜찮아!']);
-          }, typingTime + 500); // 두 번째 메시지 타이핑이 완료된 후 0.5초 뒤 버튼 표시
+          }, typingTime + 400); // 두 번째 메시지 타이핑이 완료된 후 0.3초 뒤 버튼 표시
           
-        }, 3000); // 첫 번째 메시지 후 3초 뒤
+        }, 1300); // 첫 번째 메시지 후 1.3초 뒤
       };
 
       // WebSocket 연결 상태 처리
@@ -800,8 +873,8 @@
                   setTimeout(() => {
                     createRecommendationButtons(['추천해줘!', '아니, 괜찮아.']);
                   }, messageData.length * 55 + 500);
-                }, 3000); // 감사 메시지 후 3초 뒤
-              }, 1000);
+                }, 1300);
+              }, 1300);
           }
         
       };
