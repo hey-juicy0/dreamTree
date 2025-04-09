@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+jinja2
+websockets
+PyPDF2
+langchain
+langchain-community
+langchain-openai
+numpy
+faiss-cpu
+openai

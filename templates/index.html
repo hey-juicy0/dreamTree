@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>진로탐색 AI챗봇 꿈틀이</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+      html{
+        font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      }
+      body {
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+      }
+      /* 채팅 전체 컨테이너 */
+      .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        max-width: 400px;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+      /* 상단 헤더 스타일 */
+      .chat-header {
+        background-color: #ffffff;
+        text-align: center;
+        min-height: 60px;
+        line-height: 1.2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 0.5px solid #d1d1d1;
+      }
+
+      /* 메시지 영역 스타일 */
+      .chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        gap: 1.2rem;
+        flex-direction: column;
+      }
+      /* 입력 영역 스타일 */
+      .chat-input {
+        padding: 15px;
+        border-top: 1px solid #ccc;
+      }
+      .chat-input form {
+        display: flex;
+        position: relative;
+      }
+      .chat-input input[type="text"] {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 25px;
+        border: 1px solid transparent;
+        outline: none;
+        transition: background-color 0.3s ease, border 0.3s ease;
+      }
+      #messageText:focus {
+        background-color: #fff;
+        border: 1px solid #ccc;
+      }
+      .chat-input button {
+        border: none;
+        background-color: #ffffff;
+        cursor: pointer;
+      }
+      img {
+        width: 36px;
+        border-radius: 50%;
+      }
+      /* 내가 보낸 메시지 스타일 */
+      .sent-box {
+        align-self: flex-end;
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 1rem;
+        align-items: center;
+        max-width: 80%;
+      }
+      .sent {
+        background-color: #f0f0f0;
+        text-align: left;
+        padding: 1rem;
+        border-radius: 30px;
+        line-height: 150%;
+        font-size: 0.85rem;
+      }
+      /* 받은 메시지 스타일 */
+      .received-box {
+        align-self: flex-start;
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 10px;
+        align-items: center;
+        max-width: 90%;
+      }
+      .received {
+        background-color: #F1F8D7;
+        text-align: left;
+        padding: 1rem;
+        border-radius: 30px;
+        line-height: 150%;
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div style="cursor: pointer;">
+          <svg width="30" height="26" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.66667 26C1.19445 26 0.798894 25.792 0.480006 25.376C0.161117 24.96 0.00111686 24.4458 5.74712e-06 23.8333C-0.00110536 23.2209 0.158895 22.7066 0.480006 22.2906C0.801117 21.8746 1.19667 21.6666 1.66667 21.6666H28.3333C28.8055 21.6666 29.2017 21.8746 29.5217 22.2906C29.8417 22.7066 30.0011 23.2209 30 23.8333C29.9989 24.4458 29.8389 24.9607 29.52 25.3781C29.2011 25.7956 28.8055 26.0029 28.3333 26H1.66667ZM1.66667 15.1667C1.19445 15.1667 0.798894 14.9587 0.480006 14.5427C0.161117 14.1267 0.00111686 13.6124 5.74712e-06 13C-0.00110536 12.3875 0.158895 11.8733 0.480006 11.4573C0.801117 11.0413 1.19667 10.8333 1.66667 10.8333H28.3333C28.8055 10.8333 29.2017 11.0413 29.5217 11.4573C29.8417 11.8733 30.0011 12.3875 30 13C29.9989 13.6124 29.8389 14.1274 29.52 14.5448C29.2011 14.9623 28.8055 15.1695 28.3333 15.1667H1.66667ZM1.66667 4.33333C1.19445 4.33333 0.798894 4.12533 0.480006 3.70933C0.161117 3.29333 0.00111686 2.77911 5.74712e-06 2.16666C-0.00110536 1.55422 0.158895 1.04 0.480006 0.624C0.801117 0.208 1.19667 0 1.66667 0H28.3333C28.8055 0 29.2017 0.208 29.5217 0.624C29.8417 1.04 30.0011 1.55422 30 2.16666C29.9989 2.77911 29.8389 3.29405 29.52 3.7115C29.2011 4.12894 28.8055 4.33622 28.3333 4.33333H1.66667Z" fill="#5BA24B"/>
+          </svg>
+          </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;">
+          <img src = "/static/img/character.png" class="avatar"/>
+          <label>AI챗봇 꿈틀이</label>
+        </div>
+        <div style="cursor: pointer;">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.925 24C15.45 24 15.894 23.8185 16.257 23.4555C16.62 23.0925 16.801 22.649 16.8 22.125C16.799 21.601 16.618 21.157 16.257 20.793C15.896 20.429 15.452 20.248 14.925 20.25C14.398 20.252 13.9545 20.4335 13.5945 20.7945C13.2345 21.1555 13.053 21.599 13.05 22.125C13.047 22.651 13.2285 23.095 13.5945 23.457C13.9605 23.819 14.404 24 14.925 24ZM13.575 18.225H16.35C16.35 17.4 16.444 16.75 16.632 16.275C16.82 15.8 17.351 15.15 18.225 14.325C18.875 13.675 19.3875 13.056 19.7625 12.468C20.1375 11.88 20.325 11.174 20.325 10.35C20.325 8.95 19.8125 7.875 18.7875 7.125C17.7625 6.375 16.55 6 15.15 6C13.725 6 12.569 6.375 11.682 7.125C10.795 7.875 10.176 8.775 9.825 9.825L12.3 10.8C12.425 10.35 12.7065 9.8625 13.1445 9.3375C13.5825 8.8125 14.251 8.55 15.15 8.55C15.95 8.55 16.55 8.769 16.95 9.207C17.35 9.64499 17.55 10.126 17.55 10.65C17.55 11.15 17.4 11.619 17.1 12.057C16.8 12.495 16.425 12.901 15.975 13.275C14.875 14.25 14.2 14.9875 13.95 15.4875C13.7 15.9875 13.575 16.9 13.575 18.225ZM15 30C12.925 30 10.975 29.6065 9.15 28.8195C7.325 28.0325 5.7375 26.9635 4.3875 25.6125C3.0375 24.2615 1.969 22.674 1.182 20.85C0.395002 19.026 0.0010019 17.076 1.89873e-06 15C-0.000998101 12.924 0.393002 10.974 1.182 9.15C1.971 7.326 3.0395 5.7385 4.3875 4.3875C5.7355 3.0365 7.323 1.96801 9.15 1.18201C10.977 0.396007 12.927 0.00200757 15 7.57574e-06C17.073 -0.00199242 19.023 0.392007 20.85 1.18201C22.677 1.97201 24.2645 3.0405 25.6125 4.3875C26.9605 5.7345 28.0295 7.322 28.8195 9.15C29.6095 10.978 30.003 12.928 30 15C29.997 17.072 29.603 19.022 28.818 20.85C28.033 22.678 26.9645 24.2655 25.6125 25.6125C24.2605 26.9595 22.673 28.0285 20.85 28.8195C19.027 29.6105 17.077 30.004 15 30Z" fill="#5BA24B"/>
+          </svg>
+          </div>
+      </div>
+      <div class="chat-messages" id="messages">
+      </div>
+      
+      <div class="chat-input">
+        <form id="chatForm" action="">
+          <input
+            type="text"
+            id="messageText"
+            autocomplete="off"
+            placeholder="메시지를 입력할 수 없습니다."
+          />
+          <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+            <path d="M22.806 0.0954004C24.1085 -0.359695 25.3597 0.891498 24.9046 2.19397L17.3088 23.8976C16.8153 25.3051 14.8538 25.3846 14.2487 24.0219L10.5836 15.7763L15.7423 10.6164C15.9121 10.4342 16.0046 10.1931 16.0002 9.94403C15.9958 9.69494 15.8949 9.45729 15.7187 9.28113C15.5425 9.10497 15.3049 9.00406 15.0558 8.99967C14.8067 8.99528 14.5656 9.08774 14.3834 9.25757L9.22337 14.4162L0.977654 10.7511C-0.385094 10.1447 -0.304329 8.18457 1.10201 7.69101L22.806 0.0954004Z" fill="#5BA24B"/>
+            </svg></button>
+        </form>
+
+      </div>
+    </div>
+    <script>
+      const chatAbled = false;
+      const clientId = Date.now();
+
+      // 현재 호스트에 따라 WebSocket URL 설정
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${wsProtocol}//${window.location.host}/ws/${clientId}`;
+      const ws = new WebSocket(wsUrl);
+
+      const messagesContainer = document.getElementById("messages");
+      const messageInput = document.getElementById("messageText");
+      const chatForm = document.getElementById("chatForm");
+
+      // 현재 스트리밍 중인 GPT 응답 요소와 받은 토큰 버퍼
+      let responseMessage = null;
+      let receivedText = "";
+      let isStreaming = false;
+
+      // 일정 간격마다 receivedText의 한 글자씩 화면에 추가 (70ms)
+      setInterval(() => {
+        if (receivedText && responseMessage) {
+          responseMessage.textContent += receivedText.charAt(0);
+          receivedText = receivedText.substring(1);
+        }
+        // 스트리밍이 완료되면 입력란 활성화
+        if (!isStreaming && receivedText === "") {
+          messageInput.disabled = false;
+          messageInput.placeholder = "메시지를 입력하세요...";
+        }
+      }, 70);
+
+      // 받은 메시지 박스 생성
+      function createReceivedMessageBox() {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("received-box");
+        responseMessage = document.createElement("div");
+        responseMessage.classList.add("message-text", "received");
+        const avatar = document.createElement("img");
+        avatar.classList.add("avatar");
+        avatar.src = "/static/img/character.png";
+        wrapper.appendChild(responseMessage);
+        wrapper.appendChild(avatar);
+        messagesContainer.appendChild(wrapper);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      // 보낸 메시지 박스 생성
+      function createSentMessageBox(text) {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("sent-box");
+        const textDiv = document.createElement("div");
+        textDiv.classList.add("message-text", "sent");
+        textDiv.textContent = text;
+        wrapper.appendChild(textDiv);
+        messagesContainer.appendChild(wrapper);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      // 페이지 로드 시 인삿말 스트리밍 시작
+      window.onload = () => {
+        messageInput.disabled = true;
+        messageInput.placeholder = "메시지를 입력할 수 없습니다.";
+        createReceivedMessageBox();
+        receivedText += "안녕? 나는 너의 진로탐색을 도와줄 꿈틀이야. 궁금한게 있으면 물어봐! 도와줄게~";
+      };
+
+      // WebSocket 연결 상태 처리
+      ws.onopen = () => {
+        console.log('WebSocket 연결 성공');
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket 오류:', error);
+        messageInput.placeholder = "연결 오류가 발생했습니다. 페이지를 새로고침해주세요.";
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket 연결 종료');
+        messageInput.placeholder = "연결이 종료되었습니다. 페이지를 새로고침해주세요.";
+      };
+
+      // WebSocket 메시지 처리
+      ws.onmessage = (event) => {
+        const messageData = event.data.trim();
+        console.log('받은 메시지:', messageData);
+
+        // 사용자가 보낸 메시지
+        if (messageData.startsWith("You wrote:")) {
+          const userText = messageData.replace("You wrote:", "").trim();
+          createSentMessageBox(userText);
+          isStreaming = true;
+          messageInput.disabled = true;
+          messageInput.placeholder = "답변을 기다리는 중...";
+        } 
+        // 새로운 응답 시작
+        else if (messageData === "NEW_RESPONSE") {
+          responseMessage = null;
+          createReceivedMessageBox();
+        }
+        // GPT 응답 스트리밍 처리
+        else {
+          receivedText += messageData;
+        }
+      };
+
+      // 폼 전송 이벤트 처리
+      chatForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (messageInput.disabled) return;
+        
+        const message = messageInput.value.trim();
+        if (message) {
+          ws.send(message);
+          messageInput.value = "";
+        }
+      });
+    </script>
+  </body>
+</html>
