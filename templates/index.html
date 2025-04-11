@@ -8,10 +8,18 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
     />
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+    />
     <style>
-      html{
-        font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      html {
+        font-family: "Pretendard Variable", Pretendard, -apple-system,
+          BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+          "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic",
+          "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
       }
       body {
         background-color: #fff;
@@ -32,27 +40,66 @@
       .chat-header {
         background-color: #ffffff;
         text-align: center;
-        min-height: 60px;
+        height: 40px;
         line-height: 1.2;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px;
+        padding: 6px 12px;
         border-bottom: 0.5px solid #d1d1d1;
+      }
+
+      .chat-header .avatar {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+      }
+
+      .chat-header .header-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .chat-header label {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      /* 스크롤바 스타일 */
+      .chat-messages::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+
+      .chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+      }
+
+      .chat-messages::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 2px;
+        min-height: 2px;
+      }
+
+      .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #999;
       }
 
       /* 메시지 영역 스타일 */
       .chat-messages {
         flex: 1;
-        padding: 15px;
+        padding: 10px;
         overflow-y: auto;
         display: flex;
-        gap: 1.2rem;
+        gap: 0.8rem;
         flex-direction: column;
+        margin-top: 10px; /* 헤더와의 간격 줄임 */
       }
       /* 입력 영역 스타일 */
       .chat-input {
-        padding: 15px;
+        padding: 10px;
         border-top: 1px solid #ccc;
       }
       .chat-input form {
@@ -61,20 +108,30 @@
       }
       .chat-input input[type="text"] {
         flex: 1;
-        padding: 12px 14px;
-        border-radius: 25px;
+        padding: 8px 12px;
+        border-radius: 20px;
         border: 1px solid transparent;
         outline: none;
         transition: background-color 0.3s ease, border 0.3s ease;
+        font-size: 0.85rem;
       }
       #messageText:focus {
         background-color: #fff;
         border: 1px solid #ccc;
       }
+      .chat-input input[type="text"]::placeholder {
+        font-size: 0.85rem;
+        color: #999;
+      }
       .chat-input button {
         border: none;
         background-color: #ffffff;
         cursor: pointer;
+        padding: 0 5px;
+      }
+      .chat-input button svg {
+        width: 22px;
+        height: 22px;
       }
       img {
         width: 36px;
@@ -96,6 +153,7 @@
         border-radius: 30px;
         line-height: 150%;
         font-size: 0.85rem;
+        white-space: pre-wrap; /* 줄바꿈 유지 */
       }
       /* 받은 메시지 스타일 */
       .received-box {
@@ -103,40 +161,227 @@
         display: flex;
         flex-direction: row-reverse;
         gap: 10px;
-        align-items: center;
+        align-items: flex-start;
         max-width: 90%;
+        img {
+          padding-top: 7px;
+        }
       }
       .received {
-        background-color: #F1F8D7;
+        background-color: #f1f8d7;
         text-align: left;
         padding: 1rem;
         border-radius: 30px;
         line-height: 150%;
         font-size: 0.85rem;
+        white-space: pre-wrap; /* 줄바꿈 유지 */
+      }
+      /* 아바타 없는 메시지 스타일 */
+      .received-box-no-avatar {
+        align-self: flex-start;
+        display: flex;
+        max-width: 90%;
+        margin-left: 46px; /* 아바타 이미지 너비(36px) + gap(10px) */
+      }
+
+      /* 버튼 그룹 스타일 */
+      .button-group {
+        display: flex;
+        flex-wrap: nowrap; /* 버튼을 일렬로 배치 */
+        gap: 8px; /* 버튼 간격 줄임 */
+        margin-left: 46px; /* 아바타 이미지 너비(36px) + gap(10px) - 텍스트 시작 위치와 동일 */
+        margin-top: 15px;
+        width: calc(100% - 66px); /* 컨테이너 너비 제한 */
+        justify-content: space-between; /* 버튼 사이 간격 균등 분배 */
+      }
+
+      /* 버튼 스타일 */
+      .choice-button {
+        background-color: #ffffff; /* 흰색 배경 */
+        border: 1px solid #000000; /* 검은색 테두리 */
+        border-radius: 20px;
+        padding: 8px 10px; /* 패딩 조정 */
+        font-size: 0.8rem; /* 폰트 크기 조정 */
+        cursor: pointer;
+        transition: background-color 0.3s;
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      .choice-button:hover {
+        background-color: #f5f5f5;
+      }
+
+      /* 마크다운 스타일 추가 */
+      .message-text ul,
+      .message-text ol {
+        margin: 0.5rem 0;
+        padding-left: 1.5rem;
+      }
+      .message-text li {
+        margin: 0.25rem 0;
+      }
+      .message-text strong {
+        font-weight: 600;
+      } /* 모달 스타일 */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        width: 80%;
+        max-width: 320px;
+        position: relative;
+      }
+
+      .modal-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .modal-text {
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 15px;
+      }
+
+      .modal-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+      }
+
+      .modal-input:focus {
+        outline: none;
+        border-color: #5ba24b;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .modal-button {
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+
+      .modal-cancel {
+        background-color: #f5f5f5;
+        color: #666;
+      }
+
+      .modal-download {
+        background-color: #5ba24b;
+        color: white;
+        text-decoration: none;
       }
     </style>
   </head>
   <body>
     <div class="chat-container">
-      <div class="chat-header">
-        <div style="cursor: pointer;">
-          <svg width="30" height="26" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1.66667 26C1.19445 26 0.798894 25.792 0.480006 25.376C0.161117 24.96 0.00111686 24.4458 5.74712e-06 23.8333C-0.00110536 23.2209 0.158895 22.7066 0.480006 22.2906C0.801117 21.8746 1.19667 21.6666 1.66667 21.6666H28.3333C28.8055 21.6666 29.2017 21.8746 29.5217 22.2906C29.8417 22.7066 30.0011 23.2209 30 23.8333C29.9989 24.4458 29.8389 24.9607 29.52 25.3781C29.2011 25.7956 28.8055 26.0029 28.3333 26H1.66667ZM1.66667 15.1667C1.19445 15.1667 0.798894 14.9587 0.480006 14.5427C0.161117 14.1267 0.00111686 13.6124 5.74712e-06 13C-0.00110536 12.3875 0.158895 11.8733 0.480006 11.4573C0.801117 11.0413 1.19667 10.8333 1.66667 10.8333H28.3333C28.8055 10.8333 29.2017 11.0413 29.5217 11.4573C29.8417 11.8733 30.0011 12.3875 30 13C29.9989 13.6124 29.8389 14.1274 29.52 14.5448C29.2011 14.9623 28.8055 15.1695 28.3333 15.1667H1.66667ZM1.66667 4.33333C1.19445 4.33333 0.798894 4.12533 0.480006 3.70933C0.161117 3.29333 0.00111686 2.77911 5.74712e-06 2.16666C-0.00110536 1.55422 0.158895 1.04 0.480006 0.624C0.801117 0.208 1.19667 0 1.66667 0H28.3333C28.8055 0 29.2017 0.208 29.5217 0.624C29.8417 1.04 30.0011 1.55422 30 2.16666C29.9989 2.77911 29.8389 3.29405 29.52 3.7115C29.2011 4.12894 28.8055 4.33622 28.3333 4.33333H1.66667Z" fill="#5BA24B"/>
-          </svg>
+      <!-- 모달 추가 -->
+      <div class="modal" id="pdfModal">
+        <div class="modal-content">
+          <div class="modal-title">보고서 다운로드</div>
+          <div class="modal-text">
+            <br />네가 관심 있는 직업이 있다면 알려줘. <br />
+            그에 맞는 정보를 보고서에 담아볼게 :) <br /><br />
           </div>
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;">
-          <img src = "/static/img/character.png" class="avatar"/>
+          <input
+            type="text"
+            class="modal-input"
+            placeholder="네가 꿈꾸는 직업은 뭐야?"
+            id="jobInterest"
+          />
+          <div class="modal-buttons">
+            <button class="modal-button modal-cancel" onclick="closeModal()">
+              취소
+            </button>
+            <!-- <a
+              class="modal-button modal-download"
+              href="/static/pdf/matrix.pdf"
+              download="matrix.pdf"
+              >다운로드</a
+            > -->
+            <button class="modal-button modal-download" onclick="downloadReport()">다운로드</button>
+          </div>
+        </div>
+      </div>
+      <div class="chat-header">
+        <div style="cursor: pointer">
+          <svg
+            width="30"
+            height="26"
+            viewBox="0 0 30 26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1.66667 26C1.19445 26 0.798894 25.792 0.480006 25.376C0.161117 24.96 0.00111686 24.4458 5.74712e-06 23.8333C-0.00110536 23.2209 0.158895 22.7066 0.480006 22.2906C0.801117 21.8746 1.19667 21.6666 1.66667 21.6666H28.3333C28.8055 21.6666 29.2017 21.8746 29.5217 22.2906C29.8417 22.7066 30.0011 23.2209 30 23.8333C29.9989 24.4458 29.8389 24.9607 29.52 25.3781C29.2011 25.7956 28.8055 26.0029 28.3333 26H1.66667ZM1.66667 15.1667C1.19445 15.1667 0.798894 14.9587 0.480006 14.5427C0.161117 14.1267 0.00111686 13.6124 5.74712e-06 13C-0.00110536 12.3875 0.158895 11.8733 0.480006 11.4573C0.801117 11.0413 1.19667 10.8333 1.66667 10.8333H28.3333C28.8055 10.8333 29.2017 11.0413 29.5217 11.4573C29.8417 11.8733 30.0011 12.3875 30 13C29.9989 13.6124 29.8389 14.1274 29.52 14.5448C29.2011 14.9623 28.8055 15.1695 28.3333 15.1667H1.66667ZM1.66667 4.33333C1.19445 4.33333 0.798894 4.12533 0.480006 3.70933C0.161117 3.29333 0.00111686 2.77911 5.74712e-06 2.16666C-0.00110536 1.55422 0.158895 1.04 0.480006 0.624C0.801117 0.208 1.19667 0 1.66667 0H28.3333C28.8055 0 29.2017 0.208 29.5217 0.624C29.8417 1.04 30.0011 1.55422 30 2.16666C29.9989 2.77911 29.8389 3.29405 29.52 3.7115C29.2011 4.12894 28.8055 4.33622 28.3333 4.33333H1.66667Z"
+              fill="#5BA24B"
+            />
+          </svg>
+        </div>
+        <div class="header-content">
+          <img src="/static/img/character.png" class="avatar" />
           <label>AI챗봇 꿈틀이</label>
         </div>
-        <div style="cursor: pointer;">
-          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14.925 24C15.45 24 15.894 23.8185 16.257 23.4555C16.62 23.0925 16.801 22.649 16.8 22.125C16.799 21.601 16.618 21.157 16.257 20.793C15.896 20.429 15.452 20.248 14.925 20.25C14.398 20.252 13.9545 20.4335 13.5945 20.7945C13.2345 21.1555 13.053 21.599 13.05 22.125C13.047 22.651 13.2285 23.095 13.5945 23.457C13.9605 23.819 14.404 24 14.925 24ZM13.575 18.225H16.35C16.35 17.4 16.444 16.75 16.632 16.275C16.82 15.8 17.351 15.15 18.225 14.325C18.875 13.675 19.3875 13.056 19.7625 12.468C20.1375 11.88 20.325 11.174 20.325 10.35C20.325 8.95 19.8125 7.875 18.7875 7.125C17.7625 6.375 16.55 6 15.15 6C13.725 6 12.569 6.375 11.682 7.125C10.795 7.875 10.176 8.775 9.825 9.825L12.3 10.8C12.425 10.35 12.7065 9.8625 13.1445 9.3375C13.5825 8.8125 14.251 8.55 15.15 8.55C15.95 8.55 16.55 8.769 16.95 9.207C17.35 9.64499 17.55 10.126 17.55 10.65C17.55 11.15 17.4 11.619 17.1 12.057C16.8 12.495 16.425 12.901 15.975 13.275C14.875 14.25 14.2 14.9875 13.95 15.4875C13.7 15.9875 13.575 16.9 13.575 18.225ZM15 30C12.925 30 10.975 29.6065 9.15 28.8195C7.325 28.0325 5.7375 26.9635 4.3875 25.6125C3.0375 24.2615 1.969 22.674 1.182 20.85C0.395002 19.026 0.0010019 17.076 1.89873e-06 15C-0.000998101 12.924 0.393002 10.974 1.182 9.15C1.971 7.326 3.0395 5.7385 4.3875 4.3875C5.7355 3.0365 7.323 1.96801 9.15 1.18201C10.977 0.396007 12.927 0.00200757 15 7.57574e-06C17.073 -0.00199242 19.023 0.392007 20.85 1.18201C22.677 1.97201 24.2645 3.0405 25.6125 4.3875C26.9605 5.7345 28.0295 7.322 28.8195 9.15C29.6095 10.978 30.003 12.928 30 15C29.997 17.072 29.603 19.022 28.818 20.85C28.033 22.678 26.9645 24.2655 25.6125 25.6125C24.2605 26.9595 22.673 28.0285 20.85 28.8195C19.027 29.6105 17.077 30.004 15 30Z" fill="#5BA24B"/>
-          </svg>
+        <div style="display: flex; gap: 8px; align-items: center; height: 30px">
+          <i
+            class="far fa-file-pdf"
+            style="
+              font-size: 24px;
+              color: #5ba24b;
+              cursor: pointer;
+              display: none;
+              align-items: center;
+            "
+            id="pdfIcon"
+          ></i>
+          <div style="cursor: pointer; display: flex; align-items: center">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 30 30"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.925 24C15.45 24 15.894 23.8185 16.257 23.4555C16.62 23.0925 16.801 22.649 16.8 22.125C16.799 21.601 16.618 21.157 16.257 20.793C15.896 20.429 15.452 20.248 14.925 20.25C14.398 20.252 13.9545 20.4335 13.5945 20.7945C13.2345 21.1555 13.053 21.599 13.05 22.125C13.047 22.651 13.2285 23.095 13.5945 23.457C13.9605 23.819 14.404 24 14.925 24ZM13.575 18.225H16.35C16.35 17.4 16.444 16.75 16.632 16.275C16.82 15.8 17.351 15.15 18.225 14.325C18.875 13.675 19.3875 13.056 19.7625 12.468C20.1375 11.88 20.325 11.174 20.325 10.35C20.325 8.95 19.8125 7.875 18.7875 7.125C17.7625 6.375 16.55 6 15.15 6C13.725 6 12.569 6.375 11.682 7.125C10.795 7.875 10.176 8.775 9.825 9.825L12.3 10.8C12.425 10.35 12.7065 9.8625 13.1445 9.3375C13.5825 8.8125 14.251 8.55 15.15 8.55C15.95 8.55 16.55 8.769 16.95 9.207C17.35 9.64499 17.55 10.126 17.55 10.65C17.55 11.15 17.4 11.619 17.1 12.057C16.8 12.495 16.425 12.901 15.975 13.275C14.875 14.25 14.2 14.9875 13.95 15.4875C13.7 15.9875 13.575 16.9 13.575 18.225ZM15 30C12.925 30 10.975 29.6065 9.15 28.8195C7.325 28.0325 5.7375 26.9635 4.3875 25.6125C3.0375 24.2615 1.969 22.674 1.182 20.85C0.395002 19.026 0.0010019 17.076 1.89873e-06 15C-0.000998101 12.924 0.393002 10.974 1.182 9.15C1.971 7.326 3.0395 5.7385 4.3875 4.3875C5.7355 3.0365 7.323 1.96801 9.15 1.18201C10.977 0.396007 12.927 0.00200757 15 7.57574e-06C17.073 -0.00199242 19.023 0.392007 20.85 1.18201C22.677 1.97201 24.2645 3.0405 25.6125 4.3875C26.9605 5.7345 28.0295 7.322 28.8195 9.15C29.6095 10.978 30.003 12.928 30 15C29.997 17.072 29.603 19.022 28.818 20.85C28.033 22.678 26.9645 24.2655 25.6125 25.6125C24.2605 26.9595 22.673 28.0285 20.85 28.8195C19.027 29.6105 17.077 30.004 15 30Z"
+                fill="#5BA24B"
+              />
+            </svg>
           </div>
+        </div>
       </div>
-      <div class="chat-messages" id="messages">
-      </div>
-      
+      <div class="chat-messages" id="messages"></div>
+
       <div class="chat-input">
         <form id="chatForm" action="">
           <input
@@ -145,21 +390,156 @@
             autocomplete="off"
             placeholder="메시지를 입력할 수 없습니다."
           />
-          <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-            <path d="M22.806 0.0954004C24.1085 -0.359695 25.3597 0.891498 24.9046 2.19397L17.3088 23.8976C16.8153 25.3051 14.8538 25.3846 14.2487 24.0219L10.5836 15.7763L15.7423 10.6164C15.9121 10.4342 16.0046 10.1931 16.0002 9.94403C15.9958 9.69494 15.8949 9.45729 15.7187 9.28113C15.5425 9.10497 15.3049 9.00406 15.0558 8.99967C14.8067 8.99528 14.5656 9.08774 14.3834 9.25757L9.22337 14.4162L0.977654 10.7511C-0.385094 10.1447 -0.304329 8.18457 1.10201 7.69101L22.806 0.0954004Z" fill="#5BA24B"/>
-            </svg></button>
+          <button type="submit">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="25"
+              viewBox="0 0 25 25"
+              fill="none"
+            >
+              <path
+                d="M22.806 0.0954004C24.1085 -0.359695 25.3597 0.891498 24.9046 2.19397L17.3088 23.8976C16.8153 25.3051 14.8538 25.3846 14.2487 24.0219L10.5836 15.7763L15.7423 10.6164C15.9121 10.4342 16.0046 10.1931 16.0002 9.94403C15.9958 9.69494 15.8949 9.45729 15.7187 9.28113C15.5425 9.10497 15.3049 9.00406 15.0558 8.99967C14.8067 8.99528 14.5656 9.08774 14.3834 9.25757L9.22337 14.4162L0.977654 10.7511C-0.385094 10.1447 -0.304329 8.18457 1.10201 7.69101L22.806 0.0954004Z"
+                fill="#5BA24B"
+              />
+            </svg>
+          </button>
         </form>
-
       </div>
     </div>
     <script>
       const chatAbled = false;
       const clientId = Date.now();
 
+      // RIASEC 카테고리 정의
+      const riasecCategories = {
+        1: "R", // "축구나 자전거 타기 등 운동을 한다."
+        2: "I", // "과학/미스터리/역사 같은 흥미로운 콘텐츠를 찾아본다."
+        3: "A", // "노래를 듣거나 창작활동을 한다."
+        4: "S", // "친구의 고민을 들어주거나 상담해준다."
+        5: "E", // "동아리 활동이나 학교행사를 제안하거나 기획한다."
+        6: "C", // "책상 정리, 일정 정리를 한다."
+        7: "R", // "운동/스포츠 짤을 자주 저장한다."
+        8: "I", // "유익한 지식·정보 콘텐츠를 저장하거나 공유한다."
+        9: "A", // "내 그림, 글, 짧은 영상 등을 올린다."
+        10: "S", // "친구 스토리에 자주 반응하고, 댓글도 많이 단다."
+        11: "E", // "자기 표현이나 자기관리를 하거나, 목표를 공유한다."
+        12: "C", // "꾸준히 일기나 할 일을 기록하고 정리한다."
+      };
+
+      // 사용자 응답 저장 객체
+      const userResponses = {
+        R: [], // Realistic
+        I: [], // Investigative
+        A: [], // Artistic
+        S: [], // Social
+        E: [], // Enterprising
+        C: [], // Conventional
+      };
+
       // 현재 호스트에 따라 WebSocket URL 설정
-      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const wsUrl = `${wsProtocol}//${window.location.host}/ws/${clientId}`;
-      const ws = new WebSocket(wsUrl);
+      let ws;
+
+      function connectWebSocket() {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          return; // 이미 연결된 경우 새로운 연결을 생성하지 않음
+        }
+
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          console.log("WebSocket 연결 성공");
+          messageInput.disabled = false;
+          messageInput.placeholder = "진로에 대해 질문해주세요.";
+        };
+
+        ws.onerror = (error) => {
+          console.error("WebSocket 오류:", error);
+        };
+
+        ws.onclose = (event) => {
+          if (!event.wasClean) {
+            console.log("WebSocket 연결이 비정상적으로 종료됨");
+            // 페이지가 언로드되는 상황이 아니라면 재연결 시도
+            if (!window.isUnloading) {
+              setTimeout(connectWebSocket, 1000);
+            }
+          }
+        };
+
+        ws.onmessage = (event) => {
+          const messageData = event.data;
+          console.log("받은 메시지:", messageData);
+
+          // Check for END token
+          if (messageData === "<END>") {
+            // 남은 텍스트가 모두 표시될 때까지 기다림
+            const waitForComplete = () => {
+              if (receivedText) {
+                setTimeout(waitForComplete, 50);
+              } else {
+                isStreaming = false;
+                responseMessage = null;
+                messageInput.disabled = false;
+                messageInput.placeholder = "진로에 대해 질문해주세요.";
+
+                // 설문 응답일 때만 추가 메시지 표시
+                if (isSurveyResponse) {
+                  // PDF 아이콘 표시
+                  document.getElementById("pdfIcon").style.display = "flex";
+
+                  setTimeout(() => {
+                    createReceivedMessageBox();
+                    responseMessage.textContent =
+                      "어때? 너의 성향이 잘 담긴 것 같아?";
+
+                    setTimeout(() => {
+                      createReceivedMessageBoxNoAvatar();
+                      responseMessage.textContent =
+                        "상단의 PDF 아이콘을 누르면, 너의 성향을 바탕으로 한 보고서를 받아볼 수 있어!";
+                    }, 1000);
+                  }, 1000);
+                  isSurveyResponse = false; // 플래그 초기화
+                }
+              }
+            };
+            waitForComplete();
+            return;
+          }
+
+          // 스트리밍이 끝난 상태일 때만 새 말풍선 생성
+          if (!isStreaming) {
+            createReceivedMessageBox();
+            isStreaming = true;
+            responseMessage.textContent = ""; // 새 말풍선의 텍스트 초기화
+          }
+
+          // 특수한 토큰 처리
+          if (messageData === "-") {
+            receivedText += "\n- "; // 줄바꿈과 함께 리스트 형식 유지
+          } else if (messageData === ":") {
+            receivedText += ": "; // 콜론 뒤에 공백 추가
+          } else if (messageData === "\n" || messageData === "") {
+            receivedText += "\n"; // 줄바꿈 처리
+          } else {
+            receivedText += messageData;
+          }
+        };
+      }
+
+      // 초기 WebSocket 연결
+      connectWebSocket();
+
+      // 페이지 언로드 시에만 WebSocket 연결 종료
+      window.isUnloading = false;
+      window.addEventListener("beforeunload", () => {
+        window.isUnloading = true;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.close(1000, "페이지 종료");
+        }
+      });
 
       const messagesContainer = document.getElementById("messages");
       const messageInput = document.getElementById("messageText");
@@ -169,19 +549,18 @@
       let responseMessage = null;
       let receivedText = "";
       let isStreaming = false;
+      let firstMessage = false;
 
-      // 일정 간격마다 receivedText의 한 글자씩 화면에 추가 (70ms)
+      messageInput.disabled = true;
+
+      // 일정 간격마다 receivedText의 한 글자씩 화면에 추가 (40ms)
       setInterval(() => {
         if (receivedText && responseMessage) {
           responseMessage.textContent += receivedText.charAt(0);
           receivedText = receivedText.substring(1);
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
-        // 스트리밍이 완료되면 입력란 활성화
-        if (!isStreaming && receivedText === "") {
-          messageInput.disabled = false;
-          messageInput.placeholder = "메시지를 입력하세요...";
-        }
-      }, 70);
+      }, 35);
 
       // 받은 메시지 박스 생성
       function createReceivedMessageBox() {
@@ -198,6 +577,17 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
 
+      // 이미지 없는 받은 메시지 박스 생성
+      function createReceivedMessageBoxNoAvatar() {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("received-box-no-avatar");
+        responseMessage = document.createElement("div");
+        responseMessage.classList.add("message-text", "received");
+        wrapper.appendChild(responseMessage);
+        messagesContainer.appendChild(wrapper);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
       // 보낸 메시지 박스 생성
       function createSentMessageBox(text) {
         const wrapper = document.createElement("div");
@@ -210,64 +600,620 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
 
-      // 페이지 로드 시 인삿말 스트리밍 시작
+      // 선택 버튼 그룹 생성
+      function createChoiceButtons(choices, questionNumber) {
+        const buttonGroup = document.createElement("div");
+        buttonGroup.classList.add("button-group");
+
+        // 클릭 처리 여부를 추적하는 변수
+        let isButtonClicked = false;
+
+        choices.forEach((choice) => {
+          const button = document.createElement("button");
+          button.classList.add("choice-button");
+          button.textContent = choice;
+
+          button.addEventListener("click", function () {
+            // 이미 버튼이 클릭되었으면 아무 동작 안함
+            if (isButtonClicked) return;
+
+            // 버튼 클릭 상태로 변경
+            isButtonClicked = true;
+
+            // 버튼에 따라 다른 텍스트 설정
+            let responseText;
+            let responseValue;
+            switch (choice) {
+              case "전혀":
+                // 랜덤하게 두 가지 응답 중 하나 선택
+                responseText =
+                  Math.random() < 0.5 ? "전혀 안 해." : "전혀 하지 않아.";
+                responseValue = "1";
+                break;
+              case "가끔":
+                // 랜덤하게 세 가지 응답 중 하나 선택
+                const randomOften = Math.random();
+                if (randomOften < 0.33) {
+                  responseText = "가끔 해!";
+                } else if (randomOften < 0.66) {
+                  responseText = "가끔 생각나면 해!";
+                } else {
+                  responseText = "가끔 해.";
+                }
+                responseValue = "2";
+                break;
+              case "종종":
+                // 랜덤하게 세 가지 응답 중 하나 선택
+                const randomSometimes = Math.random();
+                if (randomSometimes < 0.33) {
+                  responseText = "종종 하는 편이야.";
+                } else if (randomSometimes < 0.66) {
+                  responseText = "종종 하긴 해~";
+                } else {
+                  responseText = "종종 하는 것 같아.";
+                }
+                responseValue = "3";
+                break;
+              case "자주":
+                // 랜덤하게 세 가지 응답 중 하나 선택
+                const randomFrequent = Math.random();
+                if (randomFrequent < 0.33) {
+                  responseText = "꽤 자주 해.";
+                } else if (randomFrequent < 0.66) {
+                  responseText = "자주 하는 편이지.";
+                } else {
+                  responseText = "자주 하는 것 같아.";
+                }
+                responseValue = "4";
+                break;
+              case "항상":
+                // 랜덤하게 세 가지 응답 중 하나 선택
+                const randomAlways = Math.random();
+                if (randomAlways < 0.33) {
+                  responseText = "거의 항상 해!";
+                } else if (randomAlways < 0.66) {
+                  responseText = "항상 하는 거나 다름없어!";
+                } else {
+                  responseText = "항상 해.";
+                }
+                responseValue = "5";
+                break;
+              default:
+                responseText = choice;
+                responseValue = "0";
+            }
+
+            // 해당 질문의 RIASEC 카테고리에 응답 저장
+            const category = riasecCategories[questionNumber];
+            if (category) {
+              userResponses[category].push(parseInt(responseValue));
+              console.log(
+                `질문 ${questionNumber}(${category}) 응답: ${responseValue}`
+              );
+              console.log("현재 RIASEC 점수:", userResponses);
+            }
+
+            // 사용자 메시지로 선택지 추가 (WebSocket 전송은 생략)
+            createSentMessageBox(responseText);
+
+            // 버튼 그룹 완전히 제거
+            buttonGroup.remove();
+
+            // 다음 질문 표시 (질문 번호에 따라 다음 질문 처리)
+            if (questionNumber === 1) {
+              // 첫 번째 질문 후 두 번째 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "과학/미스터리/역사 같은 흥미로운 콘텐츠를 찾아본다.";
+                receivedText = "";
+
+                // 두 번째 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    2
+                  );
+                }, 1300);
+              }, 1300);
+            } else if (questionNumber === 2) {
+              // 두 번째 질문 후 세 번째 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent = "노래를 듣거나 창작활동을 한다.";
+                receivedText = "";
+
+                // 세 번째 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    3
+                  );
+                }, 1300);
+              }, 1300);
+            } else if (questionNumber === 3) {
+              // 세 번째 질문 후 네 번째 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "친구의 고민을 들어주거나 상담해준다.";
+                receivedText = "";
+
+                // 네 번째 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    4
+                  );
+                }, 1300);
+              }, 1300);
+            } else if (questionNumber === 4) {
+              // 네 번째 질문 후 다섯 번째 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "동아리 활동이나 학교행사를 제안하거나 기획한다.";
+                receivedText = "";
+
+                // 다섯 번째 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    5
+                  );
+                }, 1300);
+              }, 1300);
+            } else if (questionNumber === 5) {
+              // 다섯 번째 질문 후 여섯 번째 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent = "책상 정리, 일정 정리를 한다.";
+                receivedText = "";
+
+                // 여섯 번째 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    6
+                  );
+                }, 1300);
+              }, 1300);
+            } else if (questionNumber === 6) {
+              // 여섯 번째 질문 후 전환 메시지 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 전환 메시지는 한 글자씩 출력하도록 변경
+                receivedText += "첫 번째 질문이 끝났어. 다음 질문을 시작할게!";
+
+                // 전환 메시지 후 새로운 질문 섹션 시작
+                setTimeout(() => {
+                  createReceivedMessageBoxNoAvatar();
+                  // SNS 소개 메시지도 한 글자씩 출력하도록 변경
+                  receivedText += "2. SNS에서 [다음의 활동]을 얼마나 자주해?";
+
+                  // 7번 질문 표시
+                  setTimeout(() => {
+                    createReceivedMessageBoxNoAvatar();
+                    // 텍스트를 한 번에 출력
+                    responseMessage.textContent =
+                      "운동/스포츠 짤을 자주 저장한다.";
+                    receivedText = "";
+
+                    // 7번 질문 버튼 추가
+                    setTimeout(() => {
+                      createChoiceButtons(
+                        ["전혀", "가끔", "종종", "자주", "항상"],
+                        7
+                      );
+                    }, 1300); // 메시지 타이핑 완료 후 0.5초 뒤
+                  }, 1300); // SNS 소개 메시지 후 1.3초 뒤
+                }, 1300); // 전환 메시지 후 1.3초 뒤
+              }, 1300);
+            }
+            // 추가 질문들에 대한 분기 처리는 여기에 추가할 수 있음
+            else if (questionNumber === 7) {
+              // 7번 질문 후 8번 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "유익한 지식·정보 콘텐츠를 저장하거나 공유한다.";
+                receivedText = "";
+
+                // 8번 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    8
+                  );
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
+            } else if (questionNumber === 8) {
+              // 8번 질문 후 9번 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "내 그림, 글, 짧은 영상 등을 올린다.";
+                receivedText = "";
+
+                // 9번 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    9
+                  );
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
+            } else if (questionNumber === 9) {
+              // 9번 질문 후 10번 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "친구 스토리에 자주 반응하고, 댓글도 많이 단다.";
+                receivedText = "";
+
+                // 10번 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    10
+                  );
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
+            } else if (questionNumber === 10) {
+              // 10번 질문 후 11번 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "자기 표현이나 자기관리를 하거나, 목표를 공유한다.";
+                receivedText = "";
+
+                // 11번 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    11
+                  );
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
+            } else if (questionNumber === 11) {
+              // 11번 질문 후 12번 질문 표시
+              setTimeout(() => {
+                // 유저 응답 후 첫 번째 메시지는 아바타 이미지와 함께 표시
+                createReceivedMessageBox();
+                // 텍스트를 한 번에 출력
+                responseMessage.textContent =
+                  "꾸준히 일기나 할 일을 기록하고 정리한다.";
+                receivedText = "";
+
+                // 12번 질문 버튼 추가
+                setTimeout(() => {
+                  createChoiceButtons(
+                    ["전혀", "가끔", "종종", "자주", "항상"],
+                    12
+                  );
+                }, 1300); // 메시지 표시 후 1.3초 뒤
+              }, 1300);
+            } else if (questionNumber === 12) {
+              // 12번 질문의 경우 RIASEC 점수를 계산하고 저장
+              const category = riasecCategories[questionNumber];
+              if (category) {
+                userResponses[category].push(parseInt(responseValue));
+                console.log(
+                  `질문 ${questionNumber}(${category}) 응답: ${responseValue}`
+                );
+              }
+
+              // RIASEC 점수 계산
+              const riasecScores = calculateRiasecScores();
+              console.log("최종 RIASEC 점수:", riasecScores);
+
+              // 최종 RIASEC 점수와 가장 높은 유형을 서버에 전송
+              const riasecData = {
+                scores: riasecScores,
+              };
+
+              showThankYouMessage();
+              ws.send(JSON.stringify(riasecData));
+              console.log("서버에 RIASEC 점수 전송:", riasecData);
+            }
+          });
+
+          buttonGroup.appendChild(button);
+        });
+
+        messagesContainer.appendChild(buttonGroup);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      // RIASEC 점수 계산 함수
+      function calculateRiasecScores() {
+        const scores = {};
+
+        // 각 카테고리별 점수 합산
+        for (const category in userResponses) {
+          if (userResponses[category].length > 0) {
+            scores[category] = userResponses[category].reduce(
+              (sum, score) => sum + score,
+              0
+            );
+          } else {
+            scores[category] = 0;
+          }
+        }
+
+        return scores;
+      }
+
+      // 12번 질문 후 감사 메시지 표시 함수
+      function showThankYouMessage() {
+        setTimeout(() => {
+          // 이건 하나의 말풍선으로 처리
+          createReceivedMessageBox();
+          responseMessage.textContent =
+            "솔직하게 대답해줘서 고마워. 너의 응답을 바탕으로 성향을 정리해볼게! 조금만 기다려줘 :)";
+
+          // 메시지 다 보여준 다음엔 streaming 초기화해줘야 함
+          setTimeout(() => {
+            isStreaming = false;
+            responseMessage = null;
+            receivedText = "";
+
+            // 입력창도 잠깐 비활성화
+            messageInput.disabled = true;
+            messageInput.placeholder = "결과 분석 중...";
+          }, 1000);
+        }, 1000);
+      }
+
+      // 시작 버튼 생성 함수
+      function createStartButton() {
+        const buttonGroup = document.createElement("div");
+        buttonGroup.classList.add("button-group");
+        buttonGroup.style.width = "33.33%"; // 버튼 그룹 너비를 1/3로 설정
+        buttonGroup.style.margin = "0 auto 0 35%"; // 오른쪽으로 약간 이동
+        buttonGroup.style.justifyContent = "center"; // 버튼을 그룹 내에서 중앙 정렬
+
+        messageInput.disabled = true;
+        messageInput.placeholder = "설문이 진행 중입니다...";
+
+        const button = document.createElement("button");
+        button.classList.add("choice-button");
+        button.textContent = "시작";
+        button.style.backgroundColor = "#126B16";
+        button.style.color = "white";
+        button.style.border = "1px solid #126B16";
+        button.style.width = "100%"; // 버튼이 그룹의 전체 너비를 차지하도록 설정
+
+        button.addEventListener("click", function () {
+          // 사용자 메시지로 선택지 추가
+          createSentMessageBox("좋아!");
+
+          // 버튼 그룹 완전히 제거
+          buttonGroup.remove();
+
+          // 첫 번째 질문 시작
+          setTimeout(() => {
+            createReceivedMessageBox();
+            receivedText += "1. 여가 시간에 [다음의 활동]을 얼마나 자주해?";
+
+            setTimeout(() => {
+              createReceivedMessageBoxNoAvatar();
+              responseMessage.textContent =
+                "축구나 자전거 타기 등 운동을 한다.";
+              receivedText = "";
+
+              setTimeout(() => {
+                createChoiceButtons(
+                  ["전혀", "가끔", "종종", "자주", "항상"],
+                  1
+                );
+              }, 800);
+            }, 1300);
+          }, 800);
+        });
+
+        buttonGroup.appendChild(button);
+        messagesContainer.appendChild(buttonGroup);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      // 페이지 로드 시
       window.onload = () => {
         messageInput.disabled = true;
-        messageInput.placeholder = "메시지를 입력할 수 없습니다.";
+        messageInput.placeholder = "설문이 진행 중입니다...";
         createReceivedMessageBox();
-        receivedText += "안녕? 나는 너의 진로탐색을 도와줄 꿈틀이야. 궁금한게 있으면 물어봐! 도와줄게~";
+        receivedText += "안녕? 나는 너의 진로 탐색을 함께할 꿈틀이야 :)";
+
+        // 첫 번째 메시지가 끝나면 두 번째 메시지 추가
+        setTimeout(() => {
+          createReceivedMessageBoxNoAvatar();
+          const secondMessage =
+            "진로 이야기를 함께 나누기 전에, 너에 대해 조금 알고 싶어. 솔직하게 답해줘!";
+          receivedText += secondMessage;
+
+          // 두 번째 메시지 표시가 완료된 후 0.3초 뒤에 시작 버튼 추가
+          setTimeout(() => {
+            messageInput.disabled = true;
+            messageInput.placeholder = "설문이 진행 중입니다...";
+            createStartButton();
+          }, secondMessage.length * 45 + 400);
+        }, 1300);
       };
 
       // WebSocket 연결 상태 처리
       ws.onopen = () => {
-        console.log('WebSocket 연결 성공');
+        console.log("WebSocket 연결 성공");
       };
 
       ws.onerror = (error) => {
-        console.error('WebSocket 오류:', error);
-        messageInput.placeholder = "연결 오류가 발생했습니다. 페이지를 새로고침해주세요.";
+        console.error("WebSocket 오류:", error);
+        messageInput.placeholder =
+          "연결 오류가 발생했습니다. 페이지를 새로고침해주세요.";
       };
 
       ws.onclose = () => {
-        console.log('WebSocket 연결 종료');
-        messageInput.placeholder = "연결이 종료되었습니다. 페이지를 새로고침해주세요.";
+        console.log("WebSocket 연결 종료");
+        messageInput.placeholder =
+          "연결이 종료되었습니다. 페이지를 새로고침해주세요.";
       };
 
-      // WebSocket 메시지 처리
-      ws.onmessage = (event) => {
-        const messageData = event.data.trim();
-        console.log('받은 메시지:', messageData);
+      let hasShownResultIntro = false;
 
-        // 사용자가 보낸 메시지
-        if (messageData.startsWith("You wrote:")) {
-          const userText = messageData.replace("You wrote:", "").trim();
-          createSentMessageBox(userText);
-          isStreaming = true;
-          messageInput.disabled = true;
-          messageInput.placeholder = "답변을 기다리는 중...";
-        } 
-        // 새로운 응답 시작
-        else if (messageData === "NEW_RESPONSE") {
-          responseMessage = null;
-          createReceivedMessageBox();
+      // WebSocket 메시지 처리
+      let isSurveyResponse = true; // 설문 응답인지 확인하는 플래그
+
+      ws.onmessage = (event) => {
+        const messageData = event.data;
+        console.log("받은 메시지:", messageData);
+
+        // Check for END token
+        if (messageData === "<END>") {
+          // 남은 텍스트가 모두 표시될 때까지 기다림
+          const waitForComplete = () => {
+            if (receivedText) {
+              setTimeout(waitForComplete, 50);
+            } else {
+              isStreaming = false;
+              responseMessage = null;
+              messageInput.disabled = false;
+              messageInput.placeholder = "진로에 대해 질문해주세요.";
+
+              // 설문 응답일 때만 추가 메시지 표시
+              if (isSurveyResponse) {
+                // PDF 아이콘 표시
+                document.getElementById("pdfIcon").style.display = "flex";
+
+                setTimeout(() => {
+                  createReceivedMessageBox();
+                  responseMessage.textContent =
+                    "어때? 너의 성향이 잘 담긴 것 같아?";
+
+                  setTimeout(() => {
+                    createReceivedMessageBoxNoAvatar();
+                    responseMessage.textContent =
+                      "상단의 PDF 아이콘을 누르면, 너의 성향을 바탕으로 한 보고서를 받아볼 수 있어!";
+                  }, 1000);
+                }, 1000);
+                isSurveyResponse = false; // 플래그 초기화
+              }
+            }
+          };
+          waitForComplete();
+          return;
         }
-        // GPT 응답 스트리밍 처리
-        else {
+
+        // 스트리밍이 끝난 상태일 때만 새 말풍선 생성
+        if (!isStreaming) {
+          createReceivedMessageBox();
+          isStreaming = true;
+          responseMessage.textContent = ""; // 새 말풍선의 텍스트 초기화
+        }
+
+        // 특수한 토큰 처리
+        if (messageData === "-") {
+          receivedText += "\n- "; // 줄바꿈과 함께 리스트 형식 유지
+        } else if (messageData === ":") {
+          receivedText += ": "; // 콜론 뒤에 공백 추가
+        } else if (messageData === "\n" || messageData === "") {
+          receivedText += "\n"; // 줄바꿈 처리
+        } else {
           receivedText += messageData;
         }
       };
 
-      // 폼 전송 이벤트 처리
+      // 채팅 폼 제출 시 isSurveyResponse 플래그 설정
       chatForm.addEventListener("submit", (event) => {
         event.preventDefault();
         if (messageInput.disabled) return;
-        
+
         const message = messageInput.value.trim();
-        if (message) {
-          ws.send(message);
-          messageInput.value = "";
+        if (message && message.length > 0) {
+          if (!ws || ws.readyState !== WebSocket.OPEN) {
+            connectWebSocket(); // 연결이 끊어진 경우 재연결 시도
+            setTimeout(() => {
+              if (ws.readyState === WebSocket.OPEN) {
+                createSentMessageBox(message);
+                ws.send(message);
+                messageInput.value = "";
+                messageInput.disabled = true;
+                messageInput.placeholder = "답변을 기다리는 중...";
+                isSurveyResponse = false;
+              }
+            }, 1000); // 연결 대기
+          } else {
+            createSentMessageBox(message);
+            ws.send(message);
+            messageInput.value = "";
+            messageInput.disabled = true;
+            messageInput.placeholder = "답변을 기다리는 중...";
+            isSurveyResponse = false;
+          }
         }
       });
+
+      // 모달 관련 함수들
+      function showModal() {
+        const modal = document.getElementById("pdfModal");
+        modal.style.display = "flex";
+        // 입력창 포커스
+        setTimeout(() => {
+          document.getElementById("jobInterest").focus();
+        }, 100);
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("pdfModal");
+        modal.style.display = "none";
+        // 입력창 초기화
+        document.getElementById("jobInterest").value = "";
+      }
+
+      // PDF 아이콘 클릭 이벤트 리스너 추가
+      document.addEventListener("DOMContentLoaded", function () {
+        const pdfIcon = document.querySelector(".fa-file-pdf");
+        if (pdfIcon) {
+          pdfIcon.addEventListener("click", showModal);
+        }
+      });
+
+      function downloadReport() {
+    // 입력 필드에서 텍스트 값을 읽어옴
+    var input = document.getElementById('jobInterest');
+    var fileName = input.value.trim();
+
+    // 입력값이 비어있으면 경고 후 함수를 종료
+    if (!fileName) {
+      alert('직업을 입력해줘! :)');
+      return;
+    }
+
+    // 동적으로 a 태그를 생성
+    var a = document.createElement('a');
+    a.href = '/static/pdf/matrix.pdf';
+    a.download = fileName + '.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
     </script>
   </body>
 </html>
