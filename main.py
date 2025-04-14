@@ -223,7 +223,7 @@ RIASEC_TYPE_DESCRIPTIONS = {
     """
 }
 
-# RIASEC 검사 결과 해석 LLM
+# RIASEC 결과 해석 함수
 async def interpret_survey_results(survey_results, websocket: WebSocket):
     try:
         # JSON 문자열 파싱
@@ -238,25 +238,6 @@ async def interpret_survey_results(survey_results, websocket: WebSocket):
         e_score = scores.get("E", 0)
         c_score = scores.get("C", 0)
         
-        # 가장 높은 점수 유형 찾기
-        max_score = max(r_score, i_score, a_score, s_score, e_score, c_score)
-        dominant_types = []
-        
-        if r_score == max_score:
-            dominant_types.append("현실형(R)")
-        if i_score == max_score:
-            dominant_types.append("탐구형(I)")
-        if a_score == max_score:
-            dominant_types.append("예술형(A)")
-        if s_score == max_score:
-            dominant_types.append("사회형(S)")
-        if e_score == max_score:
-            dominant_types.append("기업형(E)")
-        if c_score == max_score:
-            dominant_types.append("관습형(C)")
-        
-        dominant_types_str = ", ".join(dominant_types)
-        
         # 스트리밍과 로깅을 위한 콜백 핸들러 설정
         stream_handler = AsyncIteratorCallbackHandler()
         token_logger = TokenUsageLogger(log_file_path)
@@ -269,49 +250,51 @@ async def interpret_survey_results(survey_results, websocket: WebSocket):
         )
         
         messages = [
-            SystemMessage(content=f"""
-            너는 고등학생인 나의 RIASEC 기반 직업 흥미 유형 검사 결과를 해석해주는 전문가야.
-            각 유형 설명은 아래와 같아. 이 내용을 참고해 분석해줘:
+                    SystemMessage(content="""
+                    너는 고등학생인 나의 성격과 흥미를 분석해주는 전문가야.  
+                    내가 입력한 흥미 유형 점수를 바탕으로, 나의 성격과 행동 성향을 친구처럼 편하게, 짧고 따뜻하게 설명해줘.
 
-            {RIASEC_TYPE_DESCRIPTIONS['R']}
-            {RIASEC_TYPE_DESCRIPTIONS['I']}
-            {RIASEC_TYPE_DESCRIPTIONS['A']}
-            {RIASEC_TYPE_DESCRIPTIONS['S']}
-            {RIASEC_TYPE_DESCRIPTIONS['E']}
-            {RIASEC_TYPE_DESCRIPTIONS['C']}             
-            """),
-            HumanMessage(content=f"""
-            다음은 나의 RIASEC 검사 결과야:
-            
-            현실형(R): {r_score}
-            탐구형(I): {i_score}
-            예술형(A): {a_score}
-            사회형(S): {s_score}
-            기업형(E): {e_score}
-            관습형(C): {c_score}
-            
-            가장 높은 점수 유형: {dominant_types_str}
-            
-            이 결과를 바탕으로 내가 어떤 성격과 행동 성향으로 갖고 있는지를 간단하고 친근하면서 반말로 설명해줘. 
-            성향이나 특징을 목록으로 정리할때는 완전한 문장 형식보다는 키워드 형식으로 정리해줘.
-            출력 형식은 다음과 같아:
+                    각 유형은 아래 설명을 참고해서 해석에 반영해 줘:
 
-            📝 검사 결과 분석
+                    {RIASEC_TYPE_DESCRIPTIONS['R']}
+                    {RIASEC_TYPE_DESCRIPTIONS['I']}
+                    {RIASEC_TYPE_DESCRIPTIONS['A']}
+                    {RIASEC_TYPE_DESCRIPTIONS['S']}
+                    {RIASEC_TYPE_DESCRIPTIONS['E']}
+                    {RIASEC_TYPE_DESCRIPTIONS['C']}
 
-                너는 이런 성향을 가진 사람이야:
+                    점수 분포를 확인한 뒤, 다음 원칙을 따라 분석해줘:
+                    1. 점수가 두드러지게 높은 1~2개가 있다면, 그 유형 중심으로 해석해줘.
+                    2. 점수 차이가 크지 않으면, 다양한 성향이 골고루 섞인 균형잡힌 스타일로 해석해줘.
+                    3. 단정적이지 않게, 말투는 부드럽고 친구처럼 친근하게 해줘.
+                    4. 어려운 단어나 이론 용어는 쓰지 말고, 최대한 자연스럽게 설명해줘.
+                    5. 출력은 200자 이내로 하고, 줄바꿈을 위해 `\\n`을 꼭 넣어줘.
+                    6. 마지막 문장은 이 성향이 어떤 방향에서 강점이 될 수 있는지 긍정적으로 한줄로 마무리해줘.
+                    7. 특징은 완전한 문장보단 키워드 위주로 정리해줘.
 
-                - ...
-                - ...
-                - ...
+                    출력 형식은 반드시 아래처럼 맞춰줘:
 
-                마지막에는 이 성향이 어떤 방향으로 강점이 될 수 있는지 짧고 긍정적으로 마무리해줘.
-                이론 이름(RIASEC 등)은 절대 언급하지 마!
-                분량은 200자 내외로 해줘.
-                ---
+                    📝 검사 결과 분석
 
-                말은 최대한 부드럽고 친구에게 말하듯 해줘.
-                줄바꿈을 위해 꼭 `\n`을 넣어서 반환해줘.
-            """)
+                        너는 이런 성향을 가진 사람이야:
+
+                        - ...
+                        - ...
+                        - ...
+
+                    """),
+                    HumanMessage(content=f"""
+                    다음은 나의 검사 결과야:
+
+                    현실형(R): {r_score}  
+                    탐구형(I): {i_score}  
+                    예술형(A): {a_score}  
+                    사회형(S): {s_score}  
+                    기업형(E): {e_score}  
+                    관습형(C): {c_score}
+
+                    이걸 바탕으로 내 성향을 분석해줘!
+                    """)
         ]
         
         # LLM에 질문 전송 (비동기)
@@ -336,6 +319,21 @@ async def interpret_survey_results(survey_results, websocket: WebSocket):
         error_message = f"설문 결과 해석에 실패하였습니다 {str(e)}"
         await websocket.send_text(error_message)
         return error_message
+
+# 문맥 정보 가져오기 함수
+async def get_contexts(query: str) -> dict:
+    # 직업 관련 문서 검색
+    job_docs = vectorstore.similarity_search(query, k=3)
+    job_context = "\n\n".join([doc.page_content for doc in job_docs])
+    
+    # 일반 대화 문서 검색 (직업 관련이 아닌 경우)
+    general_docs = vectorstore.similarity_search(query, k=3, filter={"type": "general"})
+    general_context = "\n\n".join([doc.page_content for doc in general_docs])
+    
+    return {
+        "job_context": job_context,
+        "general_context": general_context
+    }
 
 # WebSocket 연결 관리자
 class ConnectionManager:
@@ -383,98 +381,105 @@ async def index(request: Request):
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
     await manager.connect(websocket, client_id)
     try:
+        # 첫 연결 시 RIASEC 검사 결과 수신 및 해석
         survey_results = await websocket.receive_text()
-        
         interpretation = await interpret_survey_results(survey_results, websocket)
-
         manager.survey_interpretations[client_id] = interpretation
-        
-        # 메시지를 JSON 형식으로 변경하여 클라이언트가 쉽게 구분할 수 있도록 함
         await manager.send_personal_message("\n", websocket)
-        
+
         while True:
-            # 사용자 메시지 수신
             query = await websocket.receive_text()
-            
-            # 해당 클라이언트의 대화 기록 가져오기
             memory = manager.memories[client_id]
             chat_history = memory.chat_memory.messages
-            
-            # 대화 기록 포맷팅
+
+            # 대화 이력 포맷팅
             formatted_history = ""
             for message in chat_history:
                 if isinstance(message, HumanMessage):
                     formatted_history += f"사용자: {message.content}\n"
                 elif isinstance(message, AIMessage):
                     formatted_history += f"어시스턴트: {message.content}\n"
-            
-            # 관련 문서 검색
-            relevant_docs = retriever.invoke(query)
-            context = "\n\n".join([doc.page_content for doc in relevant_docs])
-            
-            # 설문 해석 결과 가져오기
+
+            # 문맥: GPT가 판단할 수 있도록 직업 관련과 일반 문서 둘 다 준비
+            contexts = await get_contexts(query)
+            job_context = contexts["job_context"]
+            general_context = contexts["general_context"]
+
+            # 설문 해석 결과
             survey_interpretation = manager.survey_interpretations[client_id]
 
-            # 스트리밍과 로깅을 위한 콜백 핸들러 설정
+            # 콜백 핸들러 설정
             stream_handler = AsyncIteratorCallbackHandler()
-            
             token_logger = TokenUsageLogger(log_file_path)
-            
+
             streaming_llm = ChatOpenAI(
                 temperature=0,
                 streaming=True,
                 callbacks=[stream_handler, token_logger],
                 model_name="gpt-4o"
             )
-            
-            # 진로 상담 챗봇 메시지 설정
+
+            # GPT가 질문 의도를 판단해서 문맥 선택하게 유도
             messages = [
                 SystemMessage(content=f"""
-                너는 고등학생인 나의 직업과 학교, 학과 정보를 알려주는 진로 상담 전문가야.
-                
-                반드시 이전 대화 내용을 기억하고 맥락을 유지해서 답변해.
-                
-                학생의 RIASEC 검사 결과 해석:
-                {survey_interpretation}
-                
-                이전 대화 내용:
-                {formatted_history}
-                
-                직업, 학교, 학과 정보:
-                {context}
+                    너는 고등학생의 진로를 도와주는 상담 전문가야.
 
-                답변은 반드시 한국어로 제공해야 해.
-                말투는 친근하고 반말로 해줘.
-                분량은 200자 내외로 해줘.
+                    학생의 검사 결과는 다음과 같아:
+                    {survey_interpretation}
 
-                각 항목은 줄을 나눠서 출력해줘.
-                줄바꿈을 위해 꼭 `\n`을 넣어서 반환해줘.
-                """),
+                    이전 대화 내용:
+                    {formatted_history}
+
+                    이제 나의 질문이 들어올 건데, 먼저 아래 중 어떤 유형인지 판단해줘:
+
+                    1. 직업/진로 추천 관련 질문
+                    2. 일반적인 성격 상담이나 대화 진로탐색 질문
+                    3. 진로탐색과 관련이 없는 대화
+
+                    만약 직업 추천 관련 질문이면 `직업 관련 문서`를 중심으로 답하고,  
+                    그 외 2번 질문이면 `일반 대화 문서`를 중심으로 대답해.
+                    그리고 나머지 진로탐색과 관련없는 대화에 대해서는 답변은 하되, 진로탐색에 대해 얘기하도록 유도하는 문장을 마지막에 포함해줘.
+
+                    내가 직업 추천을 해달라고 할 경우, 나의 검사 결과를 바탕으로 직업 1~2개를 추천하며 해당 직업에 대해 간략하게만 요약해서 최대한 가독성 좋게 보내줘.
+                    학교 추천해달라고 했을때는 알려주지 마. 대신, 나에게 알려줄 수 없다고 친절하게 안내해줘.
+
+
+                    직업 관련 문서:
+                    {job_context}
+
+                    일반 대화 문서:
+                    {general_context}
+
+                    반드시 한국어로 답하고, 말투는 친근하게 친구한테 하는 반말로 해줘.  
+                    마크다운, 번호 매기기(1., 2.), 별표(*) 등 어떤 형식도 절대 사용하지 마.  
+                    그냥 자연스럽게 문장만 써줘.  
+                    분량은 200자가 넘지 않도록.
+                    무조건 모든 문장은 줄바꿈해주고, 줄바꿈을 위해 `\\n`을 꼭 넣어줘.  
+                    마지막 문장은 매번 다양한 이모지로 기분 좋게 마무리해줘.
+
+                    """),
                 HumanMessage(content=query)
             ]
 
-            # 비동기로 응답 생성 및 스트리밍
+            # 응답 생성 및 스트리밍
             async def generate_response() -> AsyncIterator[str]:
                 response_tokens = []
                 async for token in stream_handler.aiter():
                     response_tokens.append(token)
                     yield token
 
-            # LLM에 질문 전송 (비동기)
             task = asyncio.create_task(streaming_llm.ainvoke(messages))
 
-            # 응답 스트리밍
             full_response = ""
             async for token in generate_response():
                 await manager.send_personal_message(token, websocket)
                 full_response += token
-            
-            # 응답 완료 신호 전송
+
             await manager.send_personal_message("<END>", websocket)
-            
-            # 대화 내용 메모리 저장
+
+            # 대화 이력 저장
             memory.chat_memory.add_user_message(query)
             memory.chat_memory.add_ai_message(full_response)
-            
+
     except WebSocketDisconnect:
         manager.disconnect(websocket)
